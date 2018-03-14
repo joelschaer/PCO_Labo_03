@@ -7,26 +7,37 @@ class ThreadCalcul : public QThread
 private:
     int yStart;
     int yFinal;
+    int halfWidth;
     QSize resultSize;
     double scaleFactor;
     double centerX;
+    double centerY;
     QImage* image;
-public:
-    ThreadCalcul(int yStart, int yFinal, QSize resultSize, double scaleFactor, double centerX, QImage* image):yStart(yStart), yFinal(yFinal)
-    ,resultSize(resultSize), scaleFactor(scaleFactor), centerX(centerX),image(image){
+    bool* restart;
+    bool* abort;
+    int Limit;
+    int MaxIterations;
 
+    uint* colormap;
+    int ColormapSize;
+
+public:
+    ThreadCalcul(int yStart, int yFinal, int halfWidth, QSize resultSize, double scaleFactor, double centerX, double centerY, QImage* image, bool* restart, bool* abort, int Limit, int MaxIterations, uint colormap[], int ColormapSize):
+        yStart(yStart), yFinal(yFinal), halfWidth(halfWidth), resultSize(resultSize), scaleFactor(scaleFactor), centerX(centerX), centerY(centerY), image(image), restart(restart), abort(abort), Limit(Limit), MaxIterations(MaxIterations), colormap(colormap), ColormapSize(ColormapSize){
+
+       colormap = (uint*) malloc(ColormapSize);
     }
 
     void run() {
         //-HALFHEIGHT => HALFhEIG/NBTHREAD
         for (int y = yStart; y < yFinal; ++y) {
-            if (restart)
+            if (*restart)
                 break;
-            if (abort)
+            if (*abort)
                 return;
 
             QRgb *scanLine =
-                    reinterpret_cast<QRgb *>(image.scanLine(y + halfHeight));
+                    reinterpret_cast<QRgb *>(image->scanLine(y + yFinal));
             double ay = centerY + (y * scaleFactor);
 
             for (int x = -halfWidth; x < halfWidth; ++x) {
