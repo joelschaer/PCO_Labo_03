@@ -96,11 +96,12 @@ void RenderThread::run()
 
         int halfWidth = resultSize.width() / 2;
         int halfHeight = resultSize.height() / 2;
-        QImage image(resultSize, QImage::Format_RGB32);
 
         const int NumPasses = 8;
         int pass = 0;
         while (pass < NumPasses) {
+            QImage image(resultSize, QImage::Format_RGB32);
+
             const int MaxIterations = (1 << (2 * pass + 6)) + 32;
 
             QTime startTime = QTime::currentTime();
@@ -108,7 +109,7 @@ void RenderThread::run()
             const int Limit = 4;
 
             // Création tableau de threads selon le nombre recommendé.
-            int nbrThreadToInit = 2;//QThread::idealThreadCount();
+            int nbrThreadToInit = QThread::idealThreadCount();
             ThreadCalcul* threads[nbrThreadToInit];
             int startHeight[nbrThreadToInit];
             int finalHeight[nbrThreadToInit];
@@ -119,7 +120,7 @@ void RenderThread::run()
 
             //initialisation des threads
             for(int i = 1; i <= nbrThreadToInit;i++){
-                threads[i-1] = new ThreadCalcul(startY, startY+z, halfWidth, resultSize, scaleFactor, centerX, centerY, &image, &restart, &abort, Limit, MaxIterations, colormap, ColormapSize);
+                threads[i-1] = new ThreadCalcul(startY, startY+z, halfWidth,halfHeight, resultSize, scaleFactor, centerX, centerY, &image, &restart, &abort, Limit, MaxIterations, colormap, ColormapSize);
                 threads[i-1]->start();
                 startY+=z;
             }

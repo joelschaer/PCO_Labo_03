@@ -2,12 +2,14 @@
 #define THREADCALCUL_H
 #include <QThread>
 #include<QImage>
+#include <iostream>
 class ThreadCalcul : public QThread
 {
 private:
     int yStart;
     int yFinal;
     int halfWidth;
+    int halfHeight;
     QSize resultSize;
     double scaleFactor;
     double centerX;
@@ -22,10 +24,11 @@ private:
     int ColormapSize;
 
 public:
-    ThreadCalcul(int yStart, int yFinal, int halfWidth, QSize resultSize, double scaleFactor, double centerX, double centerY, QImage* image, bool* restart, bool* abort, int Limit, int MaxIterations, uint colormap[], int ColormapSize):
-        yStart(yStart), yFinal(yFinal), halfWidth(halfWidth), resultSize(resultSize), scaleFactor(scaleFactor), centerX(centerX), centerY(centerY), image(image), restart(restart), abort(abort), Limit(Limit), MaxIterations(MaxIterations), colormap(colormap), ColormapSize(ColormapSize){
+    ThreadCalcul(int yStart, int yFinal, int halfWidth, int halfHeight, QSize resultSize, double scaleFactor, double centerX, double centerY, QImage* image, bool* restart, bool* abort, int Limit, int MaxIterations, uint colormap[], int ColormapSize):
+        yStart(yStart), yFinal(yFinal), halfWidth(halfWidth),halfHeight(halfHeight), resultSize(resultSize), scaleFactor(scaleFactor), centerX(centerX), centerY(centerY), image(image), restart(restart), abort(abort), Limit(Limit), MaxIterations(MaxIterations), colormap(colormap), ColormapSize(ColormapSize){
 
-       colormap = (uint*) malloc(ColormapSize);
+      // colormap = (uint*) malloc(ColormapSize);
+
     }
 
     void run() {
@@ -36,8 +39,7 @@ public:
             if (*abort)
                 return;
 
-            QRgb *scanLine =
-                    reinterpret_cast<QRgb *>(image->scanLine(y + yFinal));
+            QRgb *scanLine = reinterpret_cast<QRgb *>(image->scanLine(y + halfHeight));
             double ay = centerY + (y * scaleFactor);
 
             for (int x = -halfWidth; x < halfWidth; ++x) {
