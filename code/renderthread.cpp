@@ -108,20 +108,20 @@ void RenderThread::run()
 
             const int Limit = 4;
 
-            // Création tableau de threads selon le nombre recommendé.
+            // Création tableau de threads selon le nombre recommendé par la commande "idealThreadCount".
             int nbrThreadToInit = QThread::idealThreadCount();
             ThreadCalcul* threads[nbrThreadToInit];
-            int startHeight[nbrThreadToInit];
-            int finalHeight[nbrThreadToInit];
 
-            //séparation de l'image
+            //calcul des partie de l'image a calculer par les threads
             int z = resultSize.height() / nbrThreadToInit;
             int startY = -halfHeight;
 
             //initialisation des threads
-            for(int i = 1; i <= nbrThreadToInit;i++){
-                threads[i-1] = new ThreadCalcul(startY, startY+z, halfWidth,halfHeight, resultSize, scaleFactor, centerX, centerY, &image, &restart, &abort, Limit, MaxIterations, colormap, ColormapSize);
-                threads[i-1]->start();
+            for(int i = 0; i < nbrThreadToInit;i++){
+                threads[i] = new ThreadCalcul(startY, startY+z, halfWidth,halfHeight, resultSize, scaleFactor, centerX, centerY, &image, &restart, &abort, Limit, MaxIterations, colormap, ColormapSize);
+                threads[i]->start();
+
+                // déclage du départ.
                 startY+=z;
             }
 
@@ -130,6 +130,9 @@ void RenderThread::run()
                 threads[i]->wait();
             }
 
+            // en cas de fermeture sur l'interface graphique on lance un return dans le fil du code.
+            if (abort)
+                return;
 
             QTime endTime = QTime::currentTime();
             std::cout << "Time for pass " << pass << " (in ms) : " << startTime.msecsTo(endTime) << std::endl;
