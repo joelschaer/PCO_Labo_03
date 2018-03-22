@@ -49,7 +49,7 @@ Le tableau suivant compare entre notre code et la démo le temps nécéssaire po
 | pass 6        | 45909         | XXXX  |
 | pass 7        | 167346        | XXXX  |
 
-Avec le comparatif précédent effectuée sur le chargement initial de l'interface on voit très nettement la différence de performance entre notre solution et la démo. La notre propose un temps de calcul pouvant être 10 fois plus rapide.
+Avec le comparatif ci-dessus effectué sur le chargement initial de l'interface, on voit très nettement la différence de performance entre notre solution et la démo. La notre propose un temps de calcul pouvant être 10 fois plus rapide.
 
 ## Difficulté rencontrées.
 
