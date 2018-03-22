@@ -1,3 +1,14 @@
+/**************************************
+ *
+ * threadcalcul.cpp
+ *
+ * autheurs: Yann Lederrey, Joel Schär
+ *
+ * Implémentation de la classe
+ * threadcalul, voir le header pour
+ * une description.
+ *************************************/
+
 #include "threadcalcul.h"
 
 void ThreadCalcul::run() {

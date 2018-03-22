@@ -108,34 +108,37 @@ void RenderThread::run()
 
             const int Limit = 4;
 
-            // Création tableau de threads selon le nombre recommendé par la commande "idealThreadCount".
+            // Création d'un tableau de threads selon le nombre recommendé par la commande "idealThreadCount" (en fonction du nombre de coeurs disponnible).
             int nbrThreadToInit = QThread::idealThreadCount();
             ThreadCalcul* threads[nbrThreadToInit];
 
-            //calcul des partie de l'image a calculer par les threads
-            int z = resultSize.height() / nbrThreadToInit;
+            //calcul des partie de l'image a calculer par les threads.
+            int division = resultSize.height() / nbrThreadToInit;
             int startY = -halfHeight;
 
             //initialisation des threads
+            // les calculs de chaque division de l'image se fait dans un thread séparé
             for(int i = 0; i < nbrThreadToInit;i++){
-                threads[i] = new ThreadCalcul(startY, startY+z, halfWidth,halfHeight, resultSize, scaleFactor, centerX, centerY, &image, &restart, &abort, Limit, MaxIterations, colormap, ColormapSize);
+                threads[i] = new ThreadCalcul(startY, startY+division, halfWidth,halfHeight, scaleFactor, centerX, centerY,
+                                              &image, &restart, &abort, Limit, MaxIterations, colormap, ColormapSize);
+
                 threads[i]->start();
 
-                // déclage du départ.
-                startY+=z;
+                // déclage du point départ selon la taille de division.
+                startY+=division;
             }
 
-            //attente des threads
+            //attente que le calcul de toutes les divisions soient terminées.
             for(int i = 0; i < nbrThreadToInit; i++){
                 threads[i]->wait();
             }
 
-            //fermeture des threads
+            //fermeture des threads, libération des ressources utilisées.
             for(int i = 0; i < nbrThreadToInit; i++){
                 threads[i]->deleteLater();
             }
 
-            // en cas de fermeture sur l'interface graphique on lance un return dans le fil du code.
+            // en cas de fermeture sur l'interface graphique on lance un return afin de terminer l'exécution.
             if (abort)
                 return;
 
