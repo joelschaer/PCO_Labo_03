@@ -36,7 +36,7 @@ void ThreadCalcul::run() {
             if (numIterations < MaxIterations) {
                 *scanLine++ = colormap[numIterations % ColormapSize];
             } else {
-                *scanLine++ = qRgb(255, 255, 255);
+                *scanLine++ = qRgb(0, 0, 0);
             }
         }
     }
