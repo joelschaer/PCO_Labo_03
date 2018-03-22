@@ -3,6 +3,7 @@
 void ThreadCalcul::run() {
     // yStart et yFinal définissent notre hauteur de départ
     // et hauteur de fin de travail pour le thread donné.
+    // Cette boucle démarre le calcul de l'image selon les lignes.
     for (int y = yStart; y < yFinal; ++y) {
         if (*restart)
             break;
@@ -35,7 +36,7 @@ void ThreadCalcul::run() {
             if (numIterations < MaxIterations) {
                 *scanLine++ = colormap[numIterations % ColormapSize];
             } else {
-                *scanLine++ = qRgb(0, 0, 0);
+                *scanLine++ = qRgb(255, 255, 255);
             }
         }
     }
