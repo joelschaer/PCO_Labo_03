@@ -130,6 +130,11 @@ void RenderThread::run()
                 threads[i]->wait();
             }
 
+            //fermeture des threads
+            for(int i = 0; i < nbrThreadToInit; i++){
+                threads[i]->deleteLater();
+            }
+
             // en cas de fermeture sur l'interface graphique on lance un return dans le fil du code.
             if (abort)
                 return;
